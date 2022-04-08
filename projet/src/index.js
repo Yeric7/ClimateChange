@@ -9,49 +9,64 @@
 import * as d3 from 'd3'
 import { csv } from 'd3';
 
-/* import ville from '../data/CityHeight.csv'
-import eau from '../data/WaterLevel.csv'
+// import villedata from '../data/CityHeight.csv'
+import eauData from '../data/WaterLevel.csv'
+
+
+    console.log(eauData);
 
 
 // Set of data
-let villeHauteur = csv(ville)
-let eauHauteur = csv(eau)
- */
-/* const svgGraph = d3.select('body').append('svg').attr("width", 200, "height", 100); */
+
+/* let eauHauteur = csv(eau)
+let villeNom = csv(Ville)
+let villeHauteur = villedata['Hauteur']
+console.log(villeHauteur) */
+
+
+
+/* // dimensions et marges du graphique
+
+const margin = { top: 20, right: 20, bottom: 90, left: 120 },
+    width = 800 - mAbortSignal.left - margin.right,
+    height = 400 - mAbortSignal.top - margin.bottom;
+
+
+//create x axis with villeNom
+let x = d3.scaleBand()
+    .domain(villeNom)
+    .range([0, width])
+    .padding(0.1);
+    
+//create y axis with villeHauteur
+let y = d3.scaleBand()
+    .domain(villeHauteur)
+    .range([0, height])
+    .padding(0.1); */
 
 
 
 
 
 
-//create an svg element
-let svgElement = d3.select("body")
-.append("svg")
-.attr({"width" : 500, "height" : 500});
-//create a linear scale to map data to pixels, domain is [0,50] and range is [10,400]
-let xScale = d3.scaleLinear().domain([0,50]).range([10,400]);
-//create a axis based on the scale
-let xAxis = d3.axisBottom().scale(xScale)
-.tickFormat(5) //limit number of ticks to 5
-.orient("bottom"); //horizontal axis with labels to  the bottom 
-//create a new group to hold the axis
-let x = svgElement.append("g")
-.call(xAxis);
 
 
 
-/* var xAxis = d3.axisBottom(xRange).tickFormat(function(d){ return d.x;}); */
+
+
+ 
+
+
+//bar chart
+
+
+
+
+
+/* const x = d3.scaleBand()
+    .range([0, width])
+    .padding(0.1); */
+
 /* 
-// create a group for the bars
-let bars = svgGraph.append('g')
-			.attr('class', 'bars');
-
-
-bars.selectAll('rect')
-	.data(villeHauteur)
-    .enter()
-    .append('rect')
-    .attr('x', (d,i) => i*25 )
-    .attr('y', (d) => 100-d)
-    .attr('width', 20)
-    .attr('height', (d) => d); */
+const y = d3.scaleLinear()
+    .range([height, 0]); */
