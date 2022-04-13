@@ -1,72 +1,93 @@
-
+/*https://vegibit.c om/create-a-bar-chart-with-d3-javascript/
+ */
 //https://www.analyticsvidhya.com/blog/2017/08/visualizations-with-d3-js/
 // Pour importer les données
 // import file from '../data/data.csv'
 
-
+//https://www.tutorialsteacher.com/d3js/create-bar-chart-using-d3js
 
 
 import * as d3 from 'd3'
-import { csv } from 'd3';
+/* import { csv } from 'd3' */
+import { csv, json } from 'd3-fetch'
 
-// import villedata from '../data/CityHeight.csv'
+/* // import villedata from '../data/CityHeight.csv'
 import eauData from '../data/WaterLevel.csv'
+console.log(eauData)
 
-
-    console.log(eauData);
-
-
-// Set of data
-
-/* let eauHauteur = csv(eau)
-let villeNom = csv(Ville)
-let villeHauteur = villedata['Hauteur']
-console.log(villeHauteur) */
+import villeData from '../data/CityHeight.csv'
+console.log(villeData)
 
 
 
-/* // dimensions et marges du graphique
+console.log(villeData['0'])
+console.log(villeData['Ville'])
 
-const margin = { top: 20, right: 20, bottom: 90, left: 120 },
-    width = 800 - mAbortSignal.left - margin.right,
-    height = 400 - mAbortSignal.top - margin.bottom;
+//put villedatainto an array
+let villeTab = [] 
+for (let i = 0; i < villeData.length; i++) {
+    villeTab.push(villeData[i])
+}
+console.log('oui')
+console.log(villeTab) */
 
-
-//create x axis with villeNom
-let x = d3.scaleBand()
-    .domain(villeNom)
-    .range([0, width])
-    .padding(0.1);
-    
-//create y axis with villeHauteur
-let y = d3.scaleBand()
-    .domain(villeHauteur)
-    .range([0, height])
-    .padding(0.1); */
+//d
 
 
+import villeData from '../data/CityHeight.csv'
+//console.log(villeData)
 
+for (let i = 0; i < villeData.length; i++) {
+    console.log((villeData[i]));
+}
 
+console.log('oui')
+console.log(villeData.Hauteur)
+console.log(villeData.map(d => d.Hauteur))
 
+//Scale
+const maxHauteur = d3.max(villeData, d => d.Hauteur)
+const minHauteur = d3.min(villeData, d => d.Hauteur)
 
-
-
-
-
-
- 
-
-
-//bar chart
+consolet
 
 
 
+/* let svg = d3.select("svg"),
+        margin = 200,
+        width = svg.attr("width") - margin,
+        height = svg.attr("height") - margin;
 
 
-/* const x = d3.scaleBand()
-    .range([0, width])
-    .padding(0.1); */
+    let xScale = d3.scaleBand().range ([0, width]).padding(0.4),
+        yScale = d3.scaleLinear().range ([height, 0]);
 
-/* 
-const y = d3.scaleLinear()
-    .range([height, 0]); */
+    let g = svg.append("g")
+               .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+  d3.csv('../data/CityHeight.csv', function(error, data) {
+    if (error) {
+        throw error;
+    }
+});
+
+        xScale.domain(data.map(function(d) { return d.ville; }));
+        yScale.domain([0, d3.max(data, function(d) { return d.hauteur; })]);
+
+        g.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(xScale));
+
+        g.append("g")
+         .call(d3.axisLeft(yScale).tickFormat(function(d){
+             return "$" + d;
+         }).ticks(10))
+         .append("text")
+         .attr("y", 6)
+         .attr("dy", "0.71em")
+         .attr("text-anchor", "end")
+         .text("value");
+
+
+ */
+
