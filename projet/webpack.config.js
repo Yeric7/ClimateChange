@@ -17,13 +17,35 @@ module.exports = {
     module: {
         rules: [
             { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-            {test: /\.csv$/, loader: 'csv-loader', options: {
+            {test: /\.csv$/, loader: 'csv-loader',
+             options: {
                     dynamicTyping: true,
                     header: true,
                     skipEmptyLines: true
                 }
-            }
-        ]
+            },
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+              },
+              {
+                test: /\.(svg)$/i,
+                type: "asset/resource",
+              },
+              // {
+              //   test: /\.html$/,
+              //   type: "asset/resource",
+              //   generator: {
+              //     filename: "[name][ext]",
+              //   },
+              // },
+              {
+                test: /\.html$/i,
+                use: [
+                  { loader: "html-loader"},
+                ],
+              },
+            ],
     },
     plugins: [HtmlWebpackPluginConfig]
 }

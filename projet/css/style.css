@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 1440px;
+  }
+
+body {
+    background-color: #e20000;
+}
+.col-left {
+    position: relative;
+    -webkit-mask-image: url(../public/Jar-mask.svg);
+    mask-image: url(../public/Jar-mask.svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  
+.col-left svg {
+    position: absolute;
+    left: 0%;
+  }
+
+.col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    width: 850px;
+  }
+
+.title div {
+  font-size: 30px;
+  font-weight: bold;
+  background-color: #9ac8e9;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: fit-content;
+  padding: 45px 90px 45px 90px;
+}

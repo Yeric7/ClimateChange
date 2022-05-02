@@ -1,7 +1,7 @@
 {
-  "name": "02-intro-d3",
+  "name": "climate-change",
   "version": "1.0.0",
-  "description": "Exercice 2",
+  "description": "Projet visant a montrer la montée des eaux",
   "main": "src/index.js",
   "scripts": {
     "build": "babel src -d lib",
@@ -10,7 +10,11 @@
   "author": "Noemi Romano",
   "license": "ISC",
   "dependencies": {
-    "d3": "^7.3.0"
+    "d3": "^7.3.0",
+    "css-loader": "^6.7.1",
+    "html-loader": "^3.1.0",
+    "style-loader": "^3.3.1",
+    "url-loader": "^4.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
