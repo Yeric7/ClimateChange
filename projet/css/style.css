@@ -37,3 +37,40 @@ body {
   width: fit-content;
   padding: 45px 90px 45px 90px;
 }
+
+* citationText */
+
+.citationText {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  background-color: #9ac8e9;
+  height: 90%;
+  align-items: center;
+  padding: 15px 10px 15px 10px;
+  flex-grow: 1;
+}
+
+.citationText .arrow-left {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 30px solid white;
+  cursor: pointer;
+}
+
+.citationText .arrow-right {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 30px solid white;
+  cursor: pointer;
+}
+
+.citationText .content {
+  flex-grow: 100;
+  font-size: 18px;
+  padding: 10px;
+}
