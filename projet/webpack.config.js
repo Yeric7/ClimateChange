@@ -1,63 +1,29 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
+    template: './public/index.html',
+    filename: 'index.html',
+    inject: 'body'
+})
 
 module.exports = {
-  mode: "development",
-  entry: { bundle: path.resolve(__dirname, "src/index.js") },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "[name].js",
-    assetModuleFilename: "[name][ext]",
-  },
-  devServer: {
-    static: {
-      directory: path.resolve(__dirname, "dist"),
+    name: 'browser',
+    mode: 'development',
+    entry: './src/index.js',
+    output: {
+        path: path.resolve('dist'),
+        filename: 'index_bundle.js'
     },
-    port: 3000,
-    open: true,
-    hot: true,
-    compress: true,
-    historyApiFallback: true,
-  },
-  module: {
-    rules: [
-      {
-        test: /\.csv$/,
-        loader: "csv-loader",
-        options: {
-          dynamicTyping: true,
-          header: true,
-          skipEmptyLines: true,
-        },
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-      },
-      {
-        test: /\.(svg)$/i,
-        type: "asset/resource",
-      },
-      // {
-      //   test: /\.html$/,
-      //   type: "asset/resource",
-      //   generator: {
-      //     filename: "[name][ext]",
-      //   },
-      // },
-      {
-        test: /\.html$/i,
-        use: [
-          { loader: "html-loader"},
-        ],
-      },
-    ],
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: "App",
-      filename: "index.html",
-      template: "src/template.html",
-    }),
-  ],
-};
+    module: {
+        rules: [
+            { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
+            {test: /\.csv$/, loader: 'csv-loader', options: {
+                    dynamicTyping: true,
+                    header: true,
+                    skipEmptyLines: true
+                }
+            }
+        ]
+    },
+    plugins: [HtmlWebpackPluginConfig]
+}
