@@ -61,3 +61,9 @@ import citationTextData from "../data/CitationText.csv"
 const container = d3.select(".container")
 
 console.log("test")
+
+climateChangeGraph({
+    cityHeightData,
+    waterLevelData,
+    citationTextData,
+})
