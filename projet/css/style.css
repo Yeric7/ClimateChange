@@ -9,9 +9,9 @@ body {
 }
 .col-left {
     position: relative;
-    -webkit-mask-image: url(../public/Jar-mask.svg);
+    /* -webkit-mask-image: url(../public/Jar-mask.svg); */
     mask-image: url(../public/Jar-mask.svg);
-    -webkit-mask-repeat: no-repeat;
+   /*  -webkit-mask-repeat: no-repeat; */
     mask-repeat: no-repeat;
   }
   
@@ -73,4 +73,14 @@ body {
   flex-grow: 100;
   font-size: 18px;
   padding: 10px;
+}
+
+/* tooltip */
+.tooltip {
+  position: absolute;
+  padding: 8px 16px 8px 16px;
+  background-color: lightgray;
+  border-radius: 4px;
+  width: 200px;
+  border: 1px solid black;
 }

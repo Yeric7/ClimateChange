@@ -66,4 +66,11 @@ climateChangeGraph({
     cityHeightData,
     waterLevelData,
     citationTextData,
-})
+  
+    container,
+    svgJar: container.select("svg.jar"),
+
+    btnCitationTextArrorLeft: container.select(".arrow-left"),btnCitationTextArrorRight: container.select(".arrow-right"),
+    containerCitationText: container.select(".citationText .content"),
+    imgWheel: container.select(".wheel"),
+  })
