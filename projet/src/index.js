@@ -23,7 +23,7 @@ console.log(villeData['Ville'])
 
 //put villedatainto an array
 let villeTab = [] 
-for (let i = 0; i < villeData.length; i++) {
+for (let i = 0 i < villeData.length i++) {
     villeTab.push(villeData[i])
 }
 console.log('oui')
@@ -35,8 +35,8 @@ console.log(villeTab) */
 /* import villeData from '../data/CityHeight.csv'
 
 
-for (let i = 0; i < villeData.length; i++) {
-    console.log((villeData[i]));
+for (let i = 0 i < villeData.length i++) {
+    console.log((villeData[i]))
 }
 
 console.log('oui')
@@ -45,7 +45,7 @@ console.log(villeData.map(d => d.Hauteur))
 
 
 import eauData from '../data/WaterLevel.csv'
-console.log(eauData.map(b => b.hauteurCumnul));
+console.log(eauData.map(b => b.hauteurCumnul))
 console.log(eauData)
  */
 
