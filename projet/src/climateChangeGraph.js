@@ -160,7 +160,115 @@ function jar({ svgJar, cityHeight, waterLevel }) {
       margin.left,
       width - margin.right - cityWidth * cityHeight.length - cityWidth * 4,
     ])
-}
+
+    //bleu
+    const gradientblue = "gradientblue"
+    svgJar
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", gradientblue)
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "0%")
+      .attr("y2", "100%")
+      .selectAll("stop")
+      .data([
+        { offset: "0%", color: "rgba(154, 200, 233,0.5)" },
+        { offset: "100%", color: "rgba(60, 92, 170,1)" },
+      ])
+      .join("stop")
+      .attr("offset", (d) => d.offset)
+      .attr("stop-color", (d) => d.color)
+
+    const gInner = svgJar.append("g")
+    const gWater = gInner
+    .append("g")
+    .attr("transform", (d) => `translate(${margin.left},${margin.top})`)
+    .call((g) => {
+      g.append("rect")
+        .attr("class", "water")
+        .attr("fill", `url(#${gradientblue})`)
+        .attr("stroke", "none")
+        .attr("width", innerWidth)
+        .attr("y", innerHeight)
+        .attr("height", 0);
+    })
+
+    const gCity = gInner.append("g").call((g) => {
+      g.selectAll("rect")
+        .data(cityHeight)
+        .join("rect")
+        .attr("fill", "black")
+        .attr("stroke", "black")
+        .attr("x", (d, i) => cityWidth * 4 + i * cityWidth)
+        .attr("y", (d) => heightScale(d.height))
+        .attr("width", cityWidth)
+        .attr("height", (d) => innerHeight - heightScale(d.height))
+})
+
+g.selectAll("image")
+      .data(cityHeight)
+      .join("image")
+      .attr("x", (d, i) => cityWidth * 4 + i * cityWidth)
+      .attr("y", (d) => heightScale(d.height) - 180)
+      .attr("width", cityWidth)
+      .attr("height", 180)
+      .attr("href", (d) => `${d.town}CityIcon.svg`)
+  
+
+    const gYAxis = svgJar
+    .append("g")
+    .attr("transform", (d) => `translate(${margin.left},${margin.top})`)
+    .call((g) => {
+      g.selectAll("text.tick-height")
+        .data(waterLevel)
+        .join("text")
+        .attr("class", "tick-height")
+        .attr("dominant-baseline", "middle")
+        .attr("text-anchor", "start")
+        .attr("fill", "black")
+        .attr("font-weight", "bold")
+        .attr("font-size", 10)
+        .attr("x", 120)
+        .attr("y", (d) => heightScale(d.height))
+        .text((d) => d.height + "m")
+
+update()
+  function update(duration = 400) {
+    //gWater
+    gWater
+      .selectAll("rect.water")
+      .transition()
+      .duration(duration)
+      .attr("y", heightScale(yearToHeightScale(currentYear)))
+      .attr(
+        "height",
+        innerHeight - heightScale(yearToHeightScale(currentYear))
+      )
+      }
+    return update
+    })}
+
+
+    drag = {}
+
+      function dragstarted(event, d) {
+        d3.select(this).raise().classed("active", true);
+      }
+    
+      function dragged(event, d) {
+        d3.select(this).attr("x", d.x = event.x).attr("y", d.y = event.y);
+      }
+    
+      function dragended(event, d) {
+        d3.select(this).attr("stroke", null).classed("active", false)
+      }
+    
+    /*   return d3.drag(){  
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended); */
+    
 
 function citationText({ containerCitationText, data }) {
   let currentIndex = 0
