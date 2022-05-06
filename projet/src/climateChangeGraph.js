@@ -122,6 +122,46 @@ export default function climateChangeGraph({
   }
 }
 
+function jar({ svgJar, cityHeight, waterLevel }) {
+  //size
+  const width = 615
+  const height = 730
+  const margin = { left: 0, right: 0, top: 300, bottom: 8 }
+  const innerWidth = width - margin.left - margin.right
+  const innerHeight = height - margin.top - margin.bottom
+
+  const cityWidth = 130
+
+    //scale
+  const yearToHeightDomains = []
+  waterLevel.forEach((d, i, a) => {
+    if (i !== a.length - 1) {
+      yearToHeightDomains.push({
+        domain: [d.year, a[i + 1].year],
+        range: [d.height, a[i + 1].height],
+      })
+    }
+  })
+  const yearToHeightScale = piecewiseLinearScale().domain(yearToHeightDomains)
+
+  //scale
+  const heightScale = piecewiseLinearScale()
+    .domain([
+      { domain: [0, 10], pp: [0, 0.5] },
+      { domain: [10, 20], pp: [0.5, 0.6] },
+      { domain: [20, 80], pp: [0.6, 1] },
+    ])
+    .range([innerHeight * 0.9, 0])
+
+  const yearToCityPositionX = d3
+    .scaleLinear()
+    .domain(d3.extent(waterLevel, (d) => d.year))
+    .range([
+      margin.left,
+      width - margin.right - cityWidth * cityHeight.length - cityWidth * 4,
+    ])
+}
+
 function citationText({ containerCitationText, data }) {
   let currentIndex = 0
 
