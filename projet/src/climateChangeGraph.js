@@ -334,8 +334,8 @@ g.append("g")
 
 
 function piecewiseLinearScale() {
-  var Domain = [{ domain: [0, 1], pp: [0, 1] }];
-  var Range = [0, 1];
+  var Domain = [{ domain: [0, 1], pp: [0, 1] }]
+  var Range = [0, 1]
 
   function update() {
     Domain.forEach((d) => {
@@ -343,11 +343,38 @@ function piecewiseLinearScale() {
         d.scale = d3
           .scaleLinear()
           .domain(d.domain)
-          .range(d.pp.map((p) => d3.interpolate(...Range)(p)));
+          .range(d.pp.map((p) => d3.interpolate(...Range)(p)))
 
-      if (d.range) d.scale = d3.scaleLinear().domain(d.domain).range(d.range);
-    });
-  }}
+      if (d.range) d.scale = d3.scaleLinear().domain(d.domain).range(d.range)
+    })
+  }
+
+  function domain(d) {
+    if (d == undefined) return d3.extent(Domain.map((dd) => dd.domain).flat())
+
+    Domain = [...d]
+    update()
+    return scale
+  }
+
+  function range(r) {
+    Range = [...r]
+    update()
+    return scale
+  }
+
+  function scale(x) {
+    var piece = Domain.find((d) => x <= d.domain[1])
+    if (piece == undefined) {
+      piece = Domain[Domain.length - 1]
+    }
+    return piece.scale(x)
+  }
+
+  scale.domain = domain
+  scale.range = range
+  return scale
+}
 
 
 
