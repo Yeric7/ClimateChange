@@ -191,7 +191,7 @@ function jar({ svgJar, cityHeight, waterLevel }) {
         .attr("stroke", "none")
         .attr("width", innerWidth)
         .attr("y", innerHeight)
-        .attr("height", 0);
+        .attr("height", 0)
     })
 
     const gCity = gInner.append("g").call((g) => {
@@ -249,132 +249,247 @@ update()
     return update
     })}
 
+    function yearSlider({ svgYearSlider, waterLevel, onChange }) {
+  const width = 252
+  const height = 170
 
-    drag = {}
+  const years = waterLevel.map((d) => d.year)
+  years.sort()
 
-      function dragstarted(event, d) {
-        d3.select(this).raise().classed("active", true);
-      }
-    
-      function dragged(event, d) {
-        d3.select(this).attr("x", d.x = event.x).attr("y", d.y = event.y);
-      }
-    
-      function dragended(event, d) {
-        d3.select(this).attr("stroke", null).classed("active", false)
-      }
-    
-    /*   return d3.drag(){  
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended); */
-    
+  const xScale = d3
+    .scaleLinear()
+    .domain(d3.extent(years))
+    .range([0, -1 * (years.length - 1) * width])
 
-function citationText({ containerCitationText, data }) {
-  let currentIndex = 0
+  svgYearSlider.attr("width", width).attr("height", height)
 
-  containerCitationText.text(data[currentIndex].text)
-  function update(delta) {
-    let next = delta + currentIndex;
-    if (next < 0 || next > data.length - 1) return
+  const gInner = svgYearSlider.append("g")
 
-    currentIndex = next
-    containerCitationText.text(data[currentIndex].text)
+  gInner
+    .append("rect")
+    .attr("fill", "#C4C4C4")
+    .attr("stroke", "none")
+    .attr("width", years.length * width)
+    .attr("height", height - 10)
+
+  gInner
+    .selectAll("text")
+    .data(years)
+    .join("text")
+    .attr("dominant-baseline", "middle")
+    .attr("text-anchor", "middle")
+    .attr("fill", (d) => (d == currentYear ? "white" : "black"))
+    .attr("font-size", 50)
+    .attr("font-weight", "bold")
+    .attr("x", (d, i) => width / 2 + i * width)
+    .attr("y", height / 2)
+    .text((d) => d)
+
+  let gXPosition = 0
+  gInner.attr("class", "draggable").call(d3.drag().on("drag", dragging))
+
+  function dragging(e) {
+    if (isInStoryMode) {
+      const xy = d3.pointer(e)
+      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
+      return
+    }
+
+    const x = gXPosition + e.dx
+
+    if (x <= xScale.range()[0] && x >= xScale.range()[1]) {
+      gXPosition = x
+      gInner.attr("transform", `translate(${gXPosition},${0})`)
+
+      //get current year
+      currentYear = Math.round(xScale.invert(gXPosition))
+
+      //change text color
+      gInner
+        .selectAll("text")
+        .attr("fill", (d) => (d == currentYear ? "white" : "black"))
+
+      //
+      onChange()
+    }
   }
+
+  function update(duration = 400) {
+    gXPosition = xScale(currentYear)
+
+    gInner
+      .transition()
+      .duration(duration)
+      .attr("transform", `translate(${gXPosition},${0})`)
+  }
+
+  return update
+}
+
+function yearSlider({ svgYearSlider, waterLevel, onChange }) {
+  const width = 252
+  const height = 170
+
+  const years = waterLevel.map((d) => d.year)
+  years.sort()
+
+  const xScale = d3
+    .scaleLinear()
+    .domain(d3.extent(years))
+    .range([0, -1 * (years.length - 1) * width])
+
+  svgYearSlider.attr("width", width).attr("height", height)
+
+  const gInner = svgYearSlider.append("g")
+
+  gInner
+    .append("rect")
+    .attr("fill", "#C4C4C4")
+    .attr("stroke", "none")
+    .attr("width", years.length * width)
+    .attr("height", height - 10)
+
+  gInner
+    .selectAll("text")
+    .data(years)
+    .join("text")
+    .attr("dominant-baseline", "middle")
+    .attr("text-anchor", "middle")
+    .attr("fill", (d) => (d == currentYear ? "white" : "black"))
+    .attr("font-size", 50)
+    .attr("font-weight", "bold")
+    .attr("x", (d, i) => width / 2 + i * width)
+    .attr("y", height / 2)
+    .text((d) => d)
+
+  let gXPosition = 0
+  gInner.attr("class", "draggable").call(d3.drag().on("drag", dragging))
+
+  function dragging(e) {
+    if (isInStoryMode) {
+      const xy = d3.pointer(e)
+      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
+      return
+    }
+
+    const x = gXPosition + e.dx
+
+    if (x <= xScale.range()[0] && x >= xScale.range()[1]) {
+      gXPosition = x
+      gInner.attr("transform", `translate(${gXPosition},${0})`)
+
+      //get current year
+      currentYear = Math.round(xScale.invert(gXPosition))
+
+      //change text color
+      gInner
+        .selectAll("text")
+        .attr("fill", (d) => (d == currentYear ? "white" : "black"))
+
+      //
+      onChange()
+    }
+  }
+
+  function update(duration = 400) {
+    gXPosition = xScale(currentYear)
+
+    gInner
+      .transition()
+      .duration(duration)
+      .attr("transform", `translate(${gXPosition},${0})`)
+  }
+
   return update
 }
 
 function tooltipShow(x, y, text) {
-  tooltip.style("display", "inline")
+  tooltip
+    .style("display", "inline")
     .style("left", x + "px")
     .style("top", y + "px")
-    .text(text);
+    .text(text)
 
-  clearTimeout(tooltipTimer);
+  clearTimeout(tooltipTimer)
   tooltipTimer = setTimeout(function () {
-    tooltip.style("display", "none");
-  }, 3000);
+    tooltip.style("display", "none")
+  }, 3000)
 }
 
 
-var svg = d3.select("svg"),
-margin = 200,
-width = svg.attr("width") - margin,
-height = svg.attr("height") - margin;
+function yearSlider({ svgYearSlider, waterLevel, onChange }) {
+  const width = 252
+  const height = 170
 
+  const years = waterLevel.map((d) => d.year)
+  years.sort()
 
-var xScale = d3.scaleBand().range ([0, width]).padding(0.4),
-yScale = d3.scaleLinear().range ([height, 0]);
+  const xScale = d3
+    .scaleLinear()
+    .domain(d3.extent(years))
+    .range([0, -1 * (years.length - 1) * width])
 
-var g = svg.append("g")
-       .attr("transform", "translate(" + 100 + "," + 100 + ")");
+  svgYearSlider.attr("width", width).attr("height", height)
 
-d3.csv("XYZ.csv", function(error, data) {
-if (error) {
-    throw error;
-}
+  const gInner = svgYearSlider.append("g")
 
-xScale.domain(data.map(function(d) { return d.year; }));
-yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
+  gInner
+    .append("rect")
+    .attr("fill", "#C4C4C4")
+    .attr("stroke", "none")
+    .attr("width", years.length * width)
+    .attr("height", height - 10)
 
-g.append("g")
- .attr("transform", "translate(0," + height + ")")
- .call(d3.axisBottom(xScale));
+  gInner
+    .selectAll("text")
+    .data(years)
+    .join("text")
+    .attr("dominant-baseline", "middle")
+    .attr("text-anchor", "middle")
+    .attr("fill", (d) => (d == currentYear ? "white" : "black"))
+    .attr("font-size", 50)
+    .attr("font-weight", "bold")
+    .attr("x", (d, i) => width / 2 + i * width)
+    .attr("y", height / 2)
+    .text((d) => d)
 
-g.append("g")
- .call(d3.axisLeft(yScale).tickFormat(function(d){
-     return "$" + d;
- }).ticks(10))
- .append("text")
- .attr("y", 6)
- .attr("dy", "0.71em")
- .attr("text-anchor", "end")
- .text("value");
-});
+  let gXPosition = 0
+  gInner.attr("class", "draggable").call(d3.drag().on("drag", dragging))
 
-
-function piecewiseLinearScale() {
-  var Domain = [{ domain: [0, 1], pp: [0, 1] }]
-  var Range = [0, 1]
-
-  function update() {
-    Domain.forEach((d) => {
-      if (d.pp)
-        d.scale = d3
-          .scaleLinear()
-          .domain(d.domain)
-          .range(d.pp.map((p) => d3.interpolate(...Range)(p)))
-
-      if (d.range) d.scale = d3.scaleLinear().domain(d.domain).range(d.range)
-    })
-  }
-
-  function domain(d) {
-    if (d == undefined) return d3.extent(Domain.map((dd) => dd.domain).flat())
-
-    Domain = [...d]
-    update()
-    return scale
-  }
-
-  function range(r) {
-    Range = [...r]
-    update()
-    return scale
-  }
-
-  function scale(x) {
-    var piece = Domain.find((d) => x <= d.domain[1])
-    if (piece == undefined) {
-      piece = Domain[Domain.length - 1]
+  function dragging(e) {
+    if (isInStoryMode) {
+      const xy = d3.pointer(e)
+      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
+      return
     }
-    return piece.scale(x)
+
+    const x = gXPosition + e.dx
+
+    if (x <= xScale.range()[0] && x >= xScale.range()[1]) {
+      gXPosition = x
+      gInner.attr("transform", `translate(${gXPosition},${0})`)
+
+      //get current year
+      currentYear = Math.round(xScale.invert(gXPosition))
+
+      //change text color
+      gInner
+        .selectAll("text")
+        .attr("fill", (d) => (d == currentYear ? "white" : "black"))
+
+      //
+      onChange()
+    }
   }
 
-  scale.domain = domain
-  scale.range = range
-  return scale
+  function update(duration = 400) {
+    gXPosition = xScale(currentYear)
+
+    gInner
+      .transition()
+      .duration(duration)
+      .attr("transform", `translate(${gXPosition},${0})`)
+  }
+
+  return update
 }
-
-
-
