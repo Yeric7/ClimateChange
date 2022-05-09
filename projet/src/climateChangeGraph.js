@@ -1,10 +1,10 @@
 import * as d3 from "d3"
-import * as icons from "../assets/Icon/icons"
+/* import * as icons from "../assets/Icon/icons" */
 
-let isInStoryMode
-let currentYear
-let tooltip
-let tooltipTimer
+var isInStoryMode
+var currentYear
+var tooltip
+var tooltipTimer
 
 export default function climateChangeGraph({
   cityHeightData,
@@ -21,19 +21,19 @@ export default function climateChangeGraph({
   //data
   const data = parse(cityHeightData, waterLevelData, citationTextData)
 
-  //props pricipal
+  //prop principal
   isInStoryMode = false
   currentYear = d3.min(data.waterLevel, (d) => d.year)
   const totalTime = 30000
   const timeStep = 100
 
-  //scale annee
+  //scale time/Year
   const timeToYearScale = d3
     .scaleLinear()
     .domain([0, totalTime])
     .range(d3.extent(data.waterLevel, (d) => d.year))
 
-  //init main 
+  //init main component
   const citationTextUpdate = citationText({
     containerCitationText,
     data: data.citationText,
@@ -74,7 +74,7 @@ export default function climateChangeGraph({
         return
       }
 
-      //commence story mode
+      //demarage du story mode
       isInStoryMode = true
       let currentTime = 0
       imgWheel.classed("rotate", true)
@@ -132,7 +132,7 @@ function jar({ svgJar, cityHeight, waterLevel }) {
 
   const cityWidth = 130
 
-    //scale
+  //scale
   const yearToHeightDomains = []
   waterLevel.forEach((d, i, a) => {
     if (i !== a.length - 1) {
@@ -142,6 +142,7 @@ function jar({ svgJar, cityHeight, waterLevel }) {
       })
     }
   })
+
   const yearToHeightScale = piecewiseLinearScale().domain(yearToHeightDomains)
 
   //scale
@@ -161,27 +162,30 @@ function jar({ svgJar, cityHeight, waterLevel }) {
       width - margin.right - cityWidth * cityHeight.length - cityWidth * 4,
     ])
 
-    //bleu
-    const gradientblue = "gradientblue"
-    svgJar
-      .append("defs")
-      .append("linearGradient")
-      .attr("id", gradientblue)
-      .attr("x1", "0%")
-      .attr("y1", "0%")
-      .attr("x2", "0%")
-      .attr("y2", "100%")
-      .selectAll("stop")
-      .data([
-        { offset: "0%", color: "rgba(154, 200, 233,0.5)" },
-        { offset: "100%", color: "rgba(60, 92, 170,1)" },
-      ])
-      .join("stop")
-      .attr("offset", (d) => d.offset)
-      .attr("stop-color", (d) => d.color)
+  //couleur eau
+  const gradientblue = "gradientblue"
+  svgJar
+    .append("defs")
+    .append("linearGradient")
+    .attr("id", gradientblue)
+    .attr("x1", "0%")
+    .attr("y1", "0%")
+    .attr("x2", "0%")
+    .attr("y2", "100%")
+    .selectAll("stop")
+    .data([
+      { offset: "0%", color: "rgba(154, 200, 233,0.5)" },
+      { offset: "100%", color: "rgba(60, 92, 170,1)" },
+    ])
+    .join("stop")
+    .attr("offset", (d) => d.offset)
+    .attr("stop-color", (d) => d.color)
 
-    const gInner = svgJar.append("g")
-    const gWater = gInner
+  //
+  const gInner = svgJar.append("g")
+
+  //
+  const gWater = gInner
     .append("g")
     .attr("transform", (d) => `translate(${margin.left},${margin.top})`)
     .call((g) => {
@@ -194,19 +198,31 @@ function jar({ svgJar, cityHeight, waterLevel }) {
         .attr("height", 0)
     })
 
-    const gCity = gInner.append("g").call((g) => {
-      g.selectAll("rect")
-        .data(cityHeight)
-        .join("rect")
-        .attr("fill", "black")
-        .attr("stroke", "black")
-        .attr("x", (d, i) => cityWidth * 4 + i * cityWidth)
-        .attr("y", (d) => heightScale(d.height))
-        .attr("width", cityWidth)
-        .attr("height", (d) => innerHeight - heightScale(d.height))
-})
+  //
+  const gCity = gInner.append("g").call((g) => {
+    g.selectAll("rect")
+      .data(cityHeight)
+      .join("rect")
+      .attr("fill", "black")
+      .attr("stroke", "black")
+      .attr("x", (d, i) => cityWidth * 4 + i * cityWidth)
+      .attr("y", (d) => heightScale(d.height))
+      .attr("width", cityWidth)
+      .attr("height", (d) => innerHeight - heightScale(d.height))
 
-g.selectAll("image")
+    g.selectAll("text")
+      .data(cityHeight)
+      .join("text")
+      .attr("dominant-baseline", "hanging")
+      .attr("text-anchor", "start")
+      .attr("fill", "white")
+      .attr("font-size", 14)
+      .attr("font-weight", "bold")
+      .attr("x", (d, i) => cityWidth * 4 + i * cityWidth + 5)
+      .attr("y", (d) => heightScale(d.height) + 5)
+      .text((d) => d.town)
+
+    g.selectAll("image")
       .data(cityHeight)
       .join("image")
       .attr("x", (d, i) => cityWidth * 4 + i * cityWidth)
@@ -214,9 +230,33 @@ g.selectAll("image")
       .attr("width", cityWidth)
       .attr("height", 180)
       .attr("href", (d) => `${d.town}CityIcon.svg`)
-  
+  })
 
-    const gYAxis = svgJar
+  var gCityX = margin.left
+  gCity
+    .attr("class", "draggable")
+    .attr("transform", (d) => `translate(${gCityX},${margin.top})`)
+    .call(d3.drag().on("drag", dragging))
+
+  function dragging(e) {
+    if (isInStoryMode) {
+      const xy = d3.pointer(e)
+      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
+      return
+    }
+
+    const x = gCityX + e.dx
+
+    if (
+      x <= yearToCityPositionX.range()[0] &&
+      x >= yearToCityPositionX.range()[1]
+    ) {
+      gCityX = x
+      gCity.attr("transform", `translate(${gCityX},${margin.top})`)
+    }
+  }
+
+  const gYAxis = svgJar
     .append("g")
     .attr("transform", (d) => `translate(${margin.left},${margin.top})`)
     .call((g) => {
@@ -233,7 +273,22 @@ g.selectAll("image")
         .attr("y", (d) => heightScale(d.height))
         .text((d) => d.height + "m")
 
-update()
+      g.selectAll("text.tick-year")
+        .data(waterLevel)
+        .join("text")
+        .attr("class", "tick-year")
+        .attr("dominant-baseline", "middle")
+        .attr("text-anchor", "start")
+        .attr("fill", "black")
+        .attr("font-weight", "bold")
+        .attr("font-size", 10)
+        .attr("x", 80)
+        .attr("y", (d) => heightScale(yearToHeightScale(d.year)))
+        .text((d) => d.year)
+    })
+
+  update()
+
   function update(duration = 400) {
     //gWater
     gWater
@@ -245,82 +300,15 @@ update()
         "height",
         innerHeight - heightScale(yearToHeightScale(currentYear))
       )
-      }
-    return update
-    })}
 
-    function yearSlider({ svgYearSlider, waterLevel, onChange }) {
-  const width = 252
-  const height = 170
-
-  const years = waterLevel.map((d) => d.year)
-  years.sort()
-
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(years))
-    .range([0, -1 * (years.length - 1) * width])
-
-  svgYearSlider.attr("width", width).attr("height", height)
-
-  const gInner = svgYearSlider.append("g")
-
-  gInner
-    .append("rect")
-    .attr("fill", "#C4C4C4")
-    .attr("stroke", "none")
-    .attr("width", years.length * width)
-    .attr("height", height - 10)
-
-  gInner
-    .selectAll("text")
-    .data(years)
-    .join("text")
-    .attr("dominant-baseline", "middle")
-    .attr("text-anchor", "middle")
-    .attr("fill", (d) => (d == currentYear ? "white" : "black"))
-    .attr("font-size", 50)
-    .attr("font-weight", "bold")
-    .attr("x", (d, i) => width / 2 + i * width)
-    .attr("y", height / 2)
-    .text((d) => d)
-
-  let gXPosition = 0
-  gInner.attr("class", "draggable").call(d3.drag().on("drag", dragging))
-
-  function dragging(e) {
+    //gCity
     if (isInStoryMode) {
-      const xy = d3.pointer(e)
-      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
-      return
+      gCityX = yearToCityPositionX(currentYear)
+      gCity
+        .transition()
+        .duration(duration)
+        .attr("transform", `translate(${gCityX},${margin.top})`)
     }
-
-    const x = gXPosition + e.dx
-
-    if (x <= xScale.range()[0] && x >= xScale.range()[1]) {
-      gXPosition = x
-      gInner.attr("transform", `translate(${gXPosition},${0})`)
-
-      //get current year
-      currentYear = Math.round(xScale.invert(gXPosition))
-
-      //change text color
-      gInner
-        .selectAll("text")
-        .attr("fill", (d) => (d == currentYear ? "white" : "black"))
-
-      //
-      onChange()
-    }
-  }
-
-  function update(duration = 400) {
-    gXPosition = xScale(currentYear)
-
-    gInner
-      .transition()
-      .duration(duration)
-      .attr("transform", `translate(${gXPosition},${0})`)
   }
 
   return update
@@ -398,6 +386,21 @@ function yearSlider({ svgYearSlider, waterLevel, onChange }) {
       .transition()
       .duration(duration)
       .attr("transform", `translate(${gXPosition},${0})`)
+  }
+
+  return update
+}
+
+function citationText({ containerCitationText, data }) {
+  var currentIndex = 0
+
+  containerCitationText.text(data[currentIndex].text)
+  function update(delta) {
+    let next = delta + currentIndex
+    if (next < 0 || next > data.length - 1) return
+
+    currentIndex = next
+    containerCitationText.text(data[currentIndex].text)
   }
 
   return update
@@ -416,80 +419,45 @@ function tooltipShow(x, y, text) {
   }, 3000)
 }
 
+function piecewiseLinearScale() {
+  var Domain = [{ domain: [0, 1], pp: [0, 1] }]
+  var Range = [0, 1]
 
-function yearSlider({ svgYearSlider, waterLevel, onChange }) {
-  const width = 252
-  const height = 170
+  function update() {
+    Domain.forEach((d) => {
+      if (d.pp)
+        d.scale = d3
+          .scaleLinear()
+          .domain(d.domain)
+          .range(d.pp.map((p) => d3.interpolate(...Range)(p)))
 
-  const years = waterLevel.map((d) => d.year)
-  years.sort()
-
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(years))
-    .range([0, -1 * (years.length - 1) * width])
-
-  svgYearSlider.attr("width", width).attr("height", height)
-
-  const gInner = svgYearSlider.append("g")
-
-  gInner
-    .append("rect")
-    .attr("fill", "#C4C4C4")
-    .attr("stroke", "none")
-    .attr("width", years.length * width)
-    .attr("height", height - 10)
-
-  gInner
-    .selectAll("text")
-    .data(years)
-    .join("text")
-    .attr("dominant-baseline", "middle")
-    .attr("text-anchor", "middle")
-    .attr("fill", (d) => (d == currentYear ? "white" : "black"))
-    .attr("font-size", 50)
-    .attr("font-weight", "bold")
-    .attr("x", (d, i) => width / 2 + i * width)
-    .attr("y", height / 2)
-    .text((d) => d)
-
-  let gXPosition = 0
-  gInner.attr("class", "draggable").call(d3.drag().on("drag", dragging))
-
-  function dragging(e) {
-    if (isInStoryMode) {
-      const xy = d3.pointer(e)
-      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
-      return
-    }
-
-    const x = gXPosition + e.dx
-
-    if (x <= xScale.range()[0] && x >= xScale.range()[1]) {
-      gXPosition = x
-      gInner.attr("transform", `translate(${gXPosition},${0})`)
-
-      //get current year
-      currentYear = Math.round(xScale.invert(gXPosition))
-
-      //change text color
-      gInner
-        .selectAll("text")
-        .attr("fill", (d) => (d == currentYear ? "white" : "black"))
-
-      //
-      onChange()
-    }
+      if (d.range) d.scale = d3.scaleLinear().domain(d.domain).range(d.range)
+    })
   }
 
-  function update(duration = 400) {
-    gXPosition = xScale(currentYear)
+  function domain(d) {
+    if (d == undefined) return d3.extent(Domain.map((dd) => dd.domain).flat())
 
-    gInner
-      .transition()
-      .duration(duration)
-      .attr("transform", `translate(${gXPosition},${0})`)
+    Domain = [...d]
+    update()
+    return scale
   }
 
-  return update
+  function range(r) {
+    Range = [...r]
+    update()
+    return scale
+  }
+
+  function scale(x) {
+    var piece = Domain.find((d) => x <= d.domain[1])
+    if (piece == undefined) {
+      piece = Domain[Domain.length - 1]
+    }
+    return piece.scale(x)
+  }
+
+  scale.domain = domain
+  scale.range = range
+  return scale
 }
