@@ -24,8 +24,8 @@ export default function climateChangeGraph({
   //prop principal
   isInStoryMode = false
   currentYear = d3.min(data.waterLevel, (d) => d.year)
-  const totalTime = 30000
-  const timeStep = 100
+  const totalTime = 20000 //a changer pour accelerer l'animation
+  const timeStep = 50
 
   //scale time/year
   const timeToYearScale = d3
