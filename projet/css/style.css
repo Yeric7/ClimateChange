@@ -6,9 +6,9 @@
 
 .col-left {
   position: relative;
- /*  -webkit-mask-image: url(../assets/Jar-mask.svg);
+  -webkit-mask-image: url(../assets/Jar-mask.svg);
   mask-image: url(../assets/Jar-mask.svg);
-  -webkit-mask-repeat: no-repeat; */
+  -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 }
 
