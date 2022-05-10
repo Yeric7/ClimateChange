@@ -1,25 +1,26 @@
-const svgToMiniDataURI = require("mini-svg-data-uri");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: "./public/index.html",
-  filename: "index.html",
-  inject: "body",
-});
-
 module.exports = {
-  name: "browser",
   mode: "development",
-  entry: "./src/index.js",
+  entry: { bundle: path.resolve(__dirname, "src/index.js") },
   output: {
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
-    filename: "bundle.js",
+    filename: "[name].js",
+    assetModuleFilename: "[name][ext]",
+  },
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, "dist"),
+    },
+    port: 3000,
+    open: true,
+    hot: true,
+    compress: true,
+    historyApiFallback: true,
   },
   module: {
     rules: [
-      { test: /\.js$/, loader: "babel-loader", exclude: /node_modules/ },
       {
         test: /\.csv$/,
         loader: "csv-loader",
@@ -34,17 +35,29 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
-        test: /\.svg$/i,
+        test: /\.(svg)$/i,
+        type: "asset/resource",
+      },
+      // {
+      //   test: /\.html$/,
+      //   type: "asset/resource",
+      //   generator: {
+      //     filename: "[name][ext]",
+      //   },
+      // },
+      {
+        test: /\.html$/i,
         use: [
-          {
-            loader: "url-loader",
-            options: {
-              generator: (content) => svgToMiniDataURI(content.toString()),
-            },
-          },
+          { loader: "html-loader"},
         ],
       },
     ],
   },
-  plugins: [HtmlWebpackPluginConfig],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: "App",
+      filename: "index.html",
+      template: "src/template.html",
+    }),
+  ],
 };

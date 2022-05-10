@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-/* import * as icons from "../assets/Icon/icons" */
+import * as icons from "../assets/Icon/icons"
 
 var isInStoryMode
 var currentYear
@@ -27,7 +27,7 @@ export default function climateChangeGraph({
   const totalTime = 30000
   const timeStep = 100
 
-  //scale time/Year
+  //scale time/year
   const timeToYearScale = d3
     .scaleLinear()
     .domain([0, totalTime])
@@ -162,7 +162,7 @@ function jar({ svgJar, cityHeight, waterLevel }) {
       width - margin.right - cityWidth * cityHeight.length - cityWidth * 4,
     ])
 
-  //couleur eau
+  //degradé bleu
   const gradientblue = "gradientblue"
   svgJar
     .append("defs")
@@ -229,6 +229,8 @@ function jar({ svgJar, cityHeight, waterLevel }) {
       .attr("y", (d) => heightScale(d.height) - 180)
       .attr("width", cityWidth)
       .attr("height", 180)
+
+      // .attr("href", (d) => `/../assets/Icon/${d.town}CityIcon.svg`)
       .attr("href", (d) => `${d.town}CityIcon.svg`)
   })
 
@@ -241,7 +243,7 @@ function jar({ svgJar, cityHeight, waterLevel }) {
   function dragging(e) {
     if (isInStoryMode) {
       const xy = d3.pointer(e)
-      tooltipShow(...xy, "Attendre la fin du mode histoire pour interagir")
+      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
       return
     }
 
@@ -395,6 +397,7 @@ function citationText({ containerCitationText, data }) {
   var currentIndex = 0
 
   containerCitationText.text(data[currentIndex].text)
+
   function update(delta) {
     let next = delta + currentIndex
     if (next < 0 || next > data.length - 1) return
