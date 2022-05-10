@@ -5,7 +5,7 @@ export * from "./Bas de ManhattanCityIcon.svg";
 export * from "./CityDefaultCityIcon.svg";
 export * from "./DubaiCityIcon.svg";
 export * from "./HamburgCityIcon.svg";
-export * from "./LondreCityIcon.svg";
+export * from "./LondresCityIcon.svg";
 export * from "./MumbaiCityIcon.svg";
 export * from "./New OrleansCityIcon.svg";
 export * from "./New YorkCityIcon.svg";
