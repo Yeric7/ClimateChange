@@ -243,7 +243,7 @@ function jar({ svgJar, cityHeight, waterLevel }) {
   function dragging(e) {
     if (isInStoryMode) {
       const xy = d3.pointer(e)
-      tooltipShow(...xy, "Story mode is playing, please wait for interaction")
+      tooltipShow(...xy, "Le mode histoire est en cours, attrendre la fin le l'animation pour interagir")
       return
     }
 

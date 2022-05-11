@@ -2,7 +2,7 @@ export * from "./AlexendrieCityIcon.svg";
 export * from "./AmsterdamCityIcon.svg";
 export * from "./VeniseCityIcon.svg";
 export * from "./Bas de ManhattanCityIcon.svg";
-export * from "./CityDefaultCityIcon.svg";
+export * from "./CityDefaultCityIcon.svg"; //Permet de rejouter une nouvelle ville sans forcement designer une icone
 export * from "./DubaiCityIcon.svg";
 export * from "./HamburgCityIcon.svg";
 export * from "./LondresCityIcon.svg";
