@@ -2,6 +2,10 @@
 
 Projet de visualisation de données - Cours VisualDon - Yeric &amp; Eva
 
+
+Toute les données pour le projet ont finalment été faites a la main.
+Nous avons quand même laisser le contenu du readme original.
+
 Collection sur le climat: https://datahub.io/collections/climate-change
 
 Donnée temperature: https://datahub.io/core/global-temp
